@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite University – The Prepared Minority</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+
+        .modal-img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: contain;         /* muestra la foto completa, puede tener bordes negros */
+    background: #0f0f1f;
+    padding: 10px;
+    border-radius: 12px;
+}
+        :root {
+            --primary: #0a1f44;
+            --accent: #c9a96e;
+            --dark: #0f0f0f;
+            --light: #e0e0e0;
+            --gold: #d4af37;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+        }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+        header.hero {
+            background: linear-gradient(rgba(10, 31, 68, 0.75), rgba(10, 31, 68, 0.85)), url('https://hips.hearstapps.com/hbu.h-cdn.co/assets/17/32/1502296150-royal-roads-university.jpg?crop=0.6530612244897959xw:1xh;center,top&resize=1200:*') center/cover no-repeat;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            color: white;
+        }
+        .hero h1 { font-size: 4.5rem; margin-bottom: 1rem; letter-spacing: 2px; }
+        .hero .slogan { font-size: 1.8rem; font-style: italic; color: var(--gold); margin-bottom: 2rem; }
+        .btn {
+            background: var(--gold);
+            color: var(--primary);
+            padding: 14px 32px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        .btn:hover { background: #e6c14d; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 31, 68, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            z-index: 1000;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 25px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        nav a:hover { color: var(--gold); }
+        section {
+            padding: 100px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h2 { font-size: 3.5rem; text-align: center; margin-bottom: 60px; color: var(--gold); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.4s;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-15px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(212,175,55,0.15);
+        }
+        .card h3 { color: var(--gold); margin-bottom: 15px; font-size: 1.8rem; }
+        .card .emoji { font-size: 2rem; margin-bottom: 10px; display: block; text-align: center; }
+        .card .focus { font-style: italic; color: var(--accent); margin-top: 15px; }
+        .about-text { font-size: 1.2rem; max-width: 900px; margin: 0 auto 60px; text-align: center; }
+        .common-matters { background: rgba(212,175,55,0.08); border-radius: 16px; padding: 40px; margin: 60px auto; max-width: 1000px; }
+        footer {
+            background: var(--primary);
+            text-align: center;
+            padding: 40px 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        img.program-img, img.profile-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .hero .slogan { font-size: 1.4rem; }
+            nav a { margin: 0 15px; font-size: 0.95rem; }
+        }
+        /* New CSS for modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal.show { display: flex; opacity: 1; }
+        .modal-content {
+            background: var(--dark);
+            margin: 15%;
+            padding: 20px;
+            border: 1px solid var(--gold);
+            width: 80%;
+            max-width: 600px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .close-btn {
+            color: var(--light);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover { color: var(--gold); }
+        .modal-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .modal-bio { font-size: 1.1rem; color: var(--light); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#inicio">Home</a>
+        <a href="#historia">History</a>
+        <a href="#programas">Programs</a>
+        <a href="#faculty">Faculty</a>
+        <a href="#actividades">Activities</a>
+        <a href="#honor-students">Honor Students</a>
+    </nav>
+
+    <header class="hero" id="inicio">
+        <h1>Elite University</h1>
+        <p class="slogan">“Progress has always depended on a skilled minority. We create that minority.”</p>
+        <a href="#historia" class="btn">Discover Our Vision</a>
+        <a href="#programas" class="btn">Explore Programs</a>
+    </header>
+
+    <section id="historia">
+        <div class="container">
+            <h2>Our History and Mission</h2>
+            <p class="about-text">
+                Elite University was founded in response to the need for a different educational model, focused on <strong>real excellence</strong> and <strong>proven merit</strong>. Since its creation, we adopted a demanding academic system designed to identify and develop students with above-average abilities.
+            </p>
+            <p class="about-text">
+                Throughout our journey, we have stood out for shaping disciplined, analytical, and strategic individuals prepared for real-world situations beyond the academic environment. Our selective community is recognized for the quality of its results and its ability to influence and lead in society.
+            </p>
+
+            <h2 style="margin-top: 80px;">Objective and Vision</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Objective</h3>
+                    <p>To develop high-level leaders capable of standing out in any area of society through discipline, strategic intelligence, merit, and healthy competition.</p>
+                </div>
+                <div class="card">
+                    <h3>Vision</h3>
+                    <p>To be the most prestigious university in the country, recognized for creating self-sufficient, analytical students prepared to lead in real situations, not only academic ones.</p>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 80px;">Institutional Approach</h2>
+            <p class="about-text" style="text-align: left;">
+                We do not limit ourselves to theoretical teaching. Our model develops:<br><br>
+                • Strategic thinking<br>
+                • Analytical skills<br>
+                • Decision-making under pressure<br>
+                • Autonomy and self-sufficiency<br>
+                • Merit-based competition
+            </p>
+        </div>
+    </section>
+
+    <section id="programas" style="background: linear-gradient(to bottom, #0f0f0f, #0a1f44);">
+        <div class="container">
+            <h2>Our Undergraduate Programs</h2>
+            <div class="grid">
+
+                <div class="card">
+                    <img class="program-img" src="https://cdn.theatlantic.com/thumbor/d9lERrUoWKihlRckgr3-L1sld5Q=/0x187:2892x1814/960x540/media/img/mt/2014/04/AP081112051230/original.jpg" alt="Political debate in classroom">
+                    <span class="emoji">⚖️</span>
+                    <h3>Bachelor’s Degree in Political Science</h3>
+                    <ul>
+                        <li>Classical and Contemporary Political Theory</li>
+                        <li>Comparative Political Systems</li>
+                        <li>Power and Governance Analysis</li>
+                        <li>Public Policy and Decision-Making</li>
+                        <li>Geopolitics and Global Strategy</li>
+                        <li>Public Opinion and Political Communication</li>
+                        <li>Political Research Methods</li>
+                        <li>Leadership and Electoral Strategy</li>
+                    </ul>
+                    <p class="focus">Focus: training political analysts, strategists, and institutional leaders.</p>
+                </div>
+
+                <div class="card">
+                    <img class="program-img" src="https://www.law.uga.edu/sites/default/files/2022-08/DSC_8862.jpg" alt="Mock trial in law classroom">
+                    <span class="emoji">⚖️</span>
+                    <h3>Bachelor’s Degree in Law</h3>
+                    <ul>
+                        <li>Constitutional Law</li>
+                        <li>Civil Law</li>
+                        <li>Criminal Law</li>
+                        <li>Administrative Law</li>
+                        <li>Public International Law</li>
+                        <li>Legal Argumentation</li>
+                        <li>Litigation and Negotiation Techniques</li>
+                        <li>Professional Ethics and Legal Responsibility</li>
+                    </ul>
+                    <p class="focus">Focus: lawyers with strategic thinking and advanced analytical skills.</p>
+                </div>
+
+                <div class="card">
+                    <img class="program-img" src="https://media.springernature.com/full/springer-static/image/art%3A10.1057%2Fs41599-025-04915-8/MediaObjects/41599_2025_4915_Fig1_HTML.png" alt="Public management and policies">
+                    <span class="emoji">🏢</span>
+                    <h3>Bachelor’s Degree in Public Administration</h3>
+                    <ul>
+                        <li>Modern Public Management</li>
+                        <li>Public Policy and Impact Evaluation</li>
+                        <li>Public Budget and Finance</li>
+                        <li>Government Strategic Planning</li>
+                        <li>Transparency and Accountability</li>
+                        <li>Public Project Management</li>
+                        <li>Digital Governance</li>
+                        <li>Leadership in the Public Sector</li>
+                    </ul>
+                    <p class="focus">Focus: training efficient and strategic public managers.</p>
+                </div>
+
+                <div class="card">
+                    <img class="program-img" src="https://psu-gatsby-files-prod.s3.amazonaws.com/s3fs-public/styles/4_3_1500w/public/2023/11/sia_awc_2023_students_shake_hands_2400px.jpg?h=c3635fa2&itok=XH--Xukx" alt="International diplomatic negotiation">
+                    <span class="emoji">🌍</span>
+                    <h3>Bachelor’s Degree in International Relations</h3>
+                    <ul>
+                        <li>International Relations Theory</li>
+                        <li>Diplomacy and International Negotiation</li>
+                        <li>International Law</li>
+                        <li>International Organizations</li>
+                        <li>International Trade</li>
+                        <li>Global Security and Defense</li>
+                        <li>Comparative Foreign Policy</li>
+                        <li>International Conflict Analysis</li>
+                    </ul>
+                    <p class="focus">Focus: diplomats, global analysts, and international strategists.</p>
+                </div>
+
+            </div>
+
+            <div class="common-matters">
+                <h2 style="margin-bottom: 30px;">Common Core Subjects (for all majors)</h2>
+                <p style="text-align: center; font-size: 1.1rem;">
+                    To maintain the identity of Elite University, all students take:
+                </p>
+                <ul style="list-style: none; padding: 20px; max-width: 800px; margin: 20px auto;">
+                    <li>• Critical Thinking and Strategic Analysis</li>
+                    <li>• Advanced Public Speaking and Debate</li>
+                    <li>• Ethics and Public Responsibility</li>
+                    <li>• Research Methods</li>
+                    <li>• Decision-Making Under Pressure</li>
+                    <li>• Leadership and Professional Competence</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="faculty" style="background: linear-gradient(to bottom, #0a1f44, #0f0f0f);">
+        <div class="container">
+            <h2>Distinguished Faculty</h2>
+            <p class="about-text">
+                Elite University recruits only the sharpest minds—internationally recognized scholars, former high-level strategists, and proven leaders who demand excellence and deliver transformation.
+            </p>
+            <div class="grid">
+                <div class="card" onclick="openModal('modal-thorne')">
+                    <img class="profile-img" src="imagenes/descarga (1).jpg" alt="Dr. Cassian V. Thorne">
+                    <span class="emoji">📜</span>
+                    <h3>Dr. Ivan Gato</h3>
+                    <p>Professor of Geopolitical Strategy & Former Senior Advisor to NATO Strategic Command</p>
+                </div>
+                <div class="card" onclick="openModal('modal-harrington')">
+                    <img class="profile-img" src="imagenes/descarga 2.jpg" alt="Prof. Elara Voss Harrington">
+                    <span class="emoji">⚖️</span>
+                    <h3>Prof. Eduardo Jorge Prats</h3>
+                    <p>Chair of Constitutional Jurisprudence & Lead Counsel in landmark Supreme Court cases</p>
+                </div>
+                <div class="card" onclick="openModal('modal-langston')">
+                    <img class="profile-img" src="imagenes/3.jpg">
+                    <span class="emoji">🌐</span>
+                    <h3>Dr. Jose Rafael espaiatt</h3>
+                    <p>Professor of Diplomatic Statecraft & Former Ambassador to the United Nations Security Council</p>
+                </div>
+                <div class="card" onclick="openModal('modal-kane')">
+                    <img class="profile-img" src="imagenes/4.jpg" alt="Dr. Isolde Marwood Kane">
+                    <span class="emoji">📊</span>
+                    <h3>Dr. Jose Ariel Jimenez</h3>
+                    <p>Director of Public Policy Analytics & Architect of national economic resilience frameworks</p>
+                </div>
+                <div class="card" onclick="openModal('modal-ashford')">
+                    <img class="profile-img" src="https://news.fsu.edu/wp-content/uploads/2024/04/Justin-Sevier.jpg" alt="Prof. Valentin Crowe Ashford"> <!-- Reused for variety -->
+                    <span class="emoji">🧠</span>
+                    <h3>Prof. Valentin Crowe Ashford</h3>
+                    <p>Master of Strategic Decision Theory & Pioneer in applied game theory for crisis leadership</p>
+                </div>
+                <div class="card" onclick="openModal('modal-blackwell')">
+                    <img class="profile-img" src="imagenes/5.jpg" alt="Dr. Seraphina L. Blackwell">
+                    <span class="emoji">🔍</span>
+                    <h3>Dr.José M. Aquino</h3>
+                    <p>Professor of Advanced Intelligence Analysis & Former Chief Strategist, Global Risk Assessment Unit</p>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 80px;">Campus Capacity & Infrastructure</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Total Enrollment</h3>
+                    <p class="focus" style="font-size: 2.5rem; color: var(--gold);">Limited to 420 students</p>
+                    <p>Intentionally small to preserve intellectual intensity and personalized mentorship.</p>
+                </div>
+                <div class="card">
+                    <h3>Lecture Halls & Seminar Rooms</h3>
+                    <ul>
+                        <li>8 Tiered Lecture Amphitheaters (capacity 40–120 each)</li>
+                        <li>14 Specialized Seminar Rooms (capacity 12–25)</li>
+                        <li>3 High-Security Strategy Simulation Labs</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Additional Facilities</h3>
+                    <ul>
+                        <li>Grand Debate Chamber (seats 180)</li>
+                        <li>Private Research Carrels (84 individual)</li>
+                        <li>Secure Archives & Classified Document Vault</li>
+                        <li>Strategic Chess & Wargaming Suite</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="actividades">
+        <div class="container">
+            <h2>🎯 Extracurricular Activities</h2>
+            <div class="grid">
+                <div class="card"><h3>Strategic Debate Club</h3><p>Simulation of real conflicts, argumentative competitions, and internal tournaments.</p></div>
+                <div class="card"><h3>Business Simulations</h3><p>Competitions where students manage projects with limited resources and competitive pressure.</p></div>
+                <div class="card"><h3>Advanced Leadership Program</h3><p>Special training for students with high academic performance.</p></div>
+                <div class="card"><h3>Case Resolution Tournaments</h3><p>Analysis of real situations from the business, political, or social world.</p></div>
+                <div class="card"><h3>Chess and Strategy League</h3><p>Development of long-term planning and move anticipation.</p></div>
+                <div class="card"><h3>Elite Mentorship Program</h3><p>Outstanding students guide and supervise lower-level students.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="honor-students" style="background: rgba(212,175,55,0.05);">
+        <div class="container">
+            <h2>Students of Honor</h2>
+            <p class="about-text">
+                Each year, a select few demonstrate exceptional merit, unbreakable discipline, and strategic brilliance. These individuals represent the pinnacle of what Elite University seeks to forge.
+            </p>
+            <div class="grid">
+                <div class="card" onclick="openModal('modal-calderon')">
+                    <img class="profile-img" src="imagenes/6.jpg" alt="Aurelian Voss Calderón">
+                    <span class="emoji">🏆</span>
+                    <h3>Jonathan Junior Castro Perez</h3>
+                    <p class="focus">Class of 2025 – Valedictorian | Undefeated Debate Champion | Published in Foreign Affairs at age 20</p>
+                </div>
+                <div class="card" onclick="openModal('modal-sinclair')">
+                    <img class="profile-img" src="imagenes/7.jpg">
+                    <span class="emoji">🏆</span>
+                    <h3>Kaash paige</h3>
+                    <p class="focus">Class of 2024 – Highest Moot Court Score in University History | Clerkship at International Criminal Court</p>
+                </div>
+                <div class="card" onclick="openModal('modal-reyes')">
+                    <img class="profile-img" src="imagenes/8.jpg" alt="Damien Kaelthorne Reyes"> <!-- Reused male -->
+                    <span class="emoji">🏆</span>
+                    <h3>Berlin Junior Peguerro</h3>
+                    <p class="focus">Class of 2025 – Grand Strategy Simulation Winner (3 consecutive years) | Recruited by elite think-tank</p>
+                </div>
+                <div class="card" onclick="openModal('modal-moreau')">
+                    <img class="profile-img" src="imagenes/9.jpg" alt="Liora Evangeline Moreau">
+                    <span class="emoji">🏆</span>
+                    <h3>Bellamy Blake</h3>
+                    <p class="focus">Class of 2023 – Perfect Score in Advanced Public Speaking | Now advising heads of state on crisis communication</p>
+                </div>
+                <div class="card" onclick="openModal('modal-blackwood')">
+                    <img class="profile-img" src="imagenes/10.jpg" alt="Thorne Valerian Blackwood"> <!-- Reused male -->
+                    <span class="emoji">🏆</span>
+                    <h3>Carl Castro Perez</h3>
+                    <p class="focus">Class of 2026 (current) – Youngest recipient of the Elite Merit Medal | Leads internal mentorship cadre</p>
+                </div>
+                <div class="card" onclick="openModal('modal-ashwood')">
+                    <img class="profile-img" src="imagenes/11.jpg">
+                    <span class="emoji">🏆</span>
+                    <h3>Judith Castro Perez</h3>
+                    <p class="focus">Class of 2024 – Top Analyst in Geopolitical Forecasting Competition | Published predictive model adopted by government agencies</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Elite University – Shaping the minority that leads progress</p>
+        <p>&copy; 2026 Elite University. All rights reserved.</p>
+    </footer>
+
+    <!-- Modals for Faculty -->
+    <div id="modal-thorne" class="modal" onclick="closeModal('modal-thorne')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-thorne')">&times;</span>
+            <img class="modal-img" src="imagenes/descarga (1).jpg" alt="Dr. Cassian V. Thorne">
+            <h3>Dr. Ivan Gato</h3>
+            <p class="modal-bio">With over 20 years in geopolitical advisory roles, Dr. Thorne specializes in forecasting global conflicts and teaching students to navigate complex international landscapes.</p>
+        </div>
+    </div>
+    <div id="modal-harrington" class="modal" onclick="closeModal('modal-harrington')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-harrington')">&times;</span>
+            <img class="modal-img" src="imagenes/descarga 2.jpg">
+            <h3>Prof. Elara Voss Harrington</h3>
+            <p class="modal-bio">A trailblazer in constitutional law, Prof. Harrington has argued cases that shaped modern jurisprudence, emphasizing ethical decision-making under pressure.</p>
+        </div>
+    </div>
+    <div id="modal-langston" class="modal" onclick="closeModal('modal-langston')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-langston')">&times;</span>
+            <img class="modal-img" src="imagenes/3.jpg">
+            <h3>Amb. Dr. Julian Rexford Langston</h3>
+            <p class="modal-bio">Former UN ambassador, Dr. Langston brings real-world diplomacy to the classroom, training the next generation of global negotiators.</p>
+        </div>
+    </div>
+    <div id="modal-kane" class="modal" onclick="closeModal('modal-kane')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-kane')">&times;</span>
+            <img class="modal-img" src="imagenes/4.jpg">
+            <h3>Dr. Isolde Marwood Kane</h3>
+            <p class="modal-bio">Expert in policy analytics, Dr. Kane has designed frameworks adopted by governments, focusing on data-driven resilience strategies.</p>
+        </div>
+    </div>
+    <div id="modal-ashford" class="modal" onclick="closeModal('modal-ashford')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-ashford')">&times;</span>
+            <img class="modal-img" src="https://news.fsu.edu/wp-content/uploads/2024/04/Justin-Sevier.jpg" alt="Prof. Valentin Crowe Ashford">
+            <h3>Prof. Valentin Crowe Ashford</h3>
+            <p class="modal-bio">Pioneer in game theory, Prof. Ashford applies mathematical models to crisis leadership, challenging students to think several moves ahead.</p>
+        </div>
+    </div>
+    <div id="modal-blackwell" class="modal" onclick="closeModal('modal-blackwell')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-blackwell')">&times;</span>
+            <img class="modal-img" src="imagenes/5.jpg" alt="Dr. Seraphina L. Blackwell">
+            <h3>Dr. Seraphina L. Blackwell</h3>
+            <p class="modal-bio">Former intelligence chief, Dr. Blackwell teaches advanced analysis techniques, preparing students for high-stakes risk assessment.</p>
+        </div>
+    </div>
+
+    <!-- Modals for Honor Students -->
+    <div id="modal-calderon" class="modal" onclick="closeModal('modal-calderon')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-calderon')">&times;</span>
+            <img class="modal-img" src="imagenes/6.jpg">
+            <h3>Jonathan Junior Castro</h3>
+            <p class="modal-bio">Valedictorian with unmatched debate skills, Aurelian has already influenced policy discussions through his early publications.</p>
+        </div>
+    </div>
+    <div id="modal-sinclair" class="modal" onclick="closeModal('modal-sinclair')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-sinclair')">&times;</span>
+            <img class="modal-img" src="imagenes/7.jpg">
+            <h3>Kaash Paige</h3>
+            <p class="modal-bio">Record-breaking in moot courts, Isabeau's legal acumen has earned her a prestigious international clerkship.</p>
+        </div>
+    </div>
+    <div id="modal-reyes" class="modal" onclick="closeModal('modal-reyes')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-reyes')">&times;</span>
+            <img class="modal-img" src="imagenes/8.jpg">
+            <h3>Berlin Junior Pefuerro</h3>
+            <p class="modal-bio">Dominant in strategy simulations, Damien's skills have attracted top think-tanks for post-graduation roles.</p>
+        </div>
+    </div>
+    <div id="modal-moreau" class="modal" onclick="closeModal('modal-moreau')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-moreau')">&times;</span>
+            <img class="modal-img" src="imagenes/9.jpg">
+            <h3>Bellamy Blake/h3>
+            <p class="modal-bio">Master of public speaking, Liora now consults for global leaders on effective crisis communication.</p>
+        </div>
+    </div>
+    <div id="modal-blackwood" class="modal" onclick="closeModal('modal-blackwood')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-blackwood')">&times;</span>
+            <img class="modal-img" src="imagenes/10.jpg">
+            <h3>Carl Castro Perez</h3>
+            <p class="modal-bio">Youngest merit medal winner, Thorne leads mentorship programs while excelling in all core subjects.</p>
+        </div>
+    </div>
+    <div id="modal-ashwood" class="modal" onclick="closeModal('modal-ashwood')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal('modal-ashwood')">&times;</span>
+            <img class="modal-img" src="imagenes/11.jpg" alt="Cressida Veyron Ashwood">
+            <h3>Judith Castro</h3>
+            <p class="modal-bio">Top forecaster, Cressida's models are used by agencies, showcasing her analytical prowess.</p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // New JS for modals
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+        }
+    </script>
+
+</body>
+</html>
